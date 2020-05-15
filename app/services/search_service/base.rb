@@ -4,6 +4,8 @@ module SearchService
     ITEMS_PER_PAGE = 20.freeze
 
     def search(options = {})
+      validate_options!(options)
+
       query = build_request_query(options[:search_key])
       response = client.search_repositories(query, page: options.fetch(:page) { 1 }, per_page: ITEMS_PER_PAGE)
       prepare_response(response)
@@ -16,6 +18,10 @@ module SearchService
     end
 
     private
+
+    def validate_options!(options)
+      raise ActionController::ParameterMissing, "search key" unless options[:search_key]
+    end
 
     def prepare_response(response)
       {

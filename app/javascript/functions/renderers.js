@@ -1,3 +1,4 @@
+// Will be good to provide full-scale pagination (both ways, pages) here in next releases.
 const searchResultTemlate = `
   <div class="list-group">
     <a href="#" class="list-group-item list-group-item-action active">
