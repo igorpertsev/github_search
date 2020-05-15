@@ -1,24 +1,55 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Hi, guys. This is simple single page application to search for Github projects localy. Based on Ruby 2.7.0, Rails 6, Bootstrap 4.
 
-Things you may want to cover:
+It includes simple search input (minimum 3 symbols required to start searching) and list of repositories available. Please note, that in shows only 20 records per page. But it also display total count of repositories available + link to next page at the bottom of the list.
 
-* Ruby version
+# Project Setup
 
-* System dependencies
+In order to run this project localy, please clone it to local machine (or required server). After that please go to project folder and run
 
-* Configuration
+> bundle install
 
-* Database creation
+After that, you need to install all front-end dependecies with
 
-* Database initialization
+> yarn install
 
-* How to run the test suite
+By default you can use key, stored in credentials.yml, to get access to Github API. If you need for some reason to update it, you can adjust key's value by running
 
-* Services (job queues, cache servers, search engines, etc.)
+> bundle exec rails credentials:edit
 
-* Deployment instructions
+and modifying #github_api_key
 
-* ...
+To run server simply run
+
+> bundle exec rails s
+
+Server will be running on localhost:3000
+
+# Or if you are lazy
+
+You can run project with single command
+
+> ./bin/server
+
+This command will run list of commands and start server on localhost:3000
+
+Note: If you are getting error while running this command, please give it permissions to run as script
+
+> chmod 777 ./bin/server
+
+
+# Testing
+
+This project uses Rspec for test puprose. To run tests simply run
+
+> bundle exec rspec
+
+And check results.
+
+Enjoy it !
+
+
+UI examples:
+![Alt text](https://github.com/igorpertsev/github_search/blob/master/public/example2.png "Search results")
+![Alt text](https://github.com/igorpertsev/github_search/blob/master/public/example1.png "Next page")

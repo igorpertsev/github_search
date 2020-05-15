@@ -14,6 +14,7 @@ gem 'jbuilder', '~> 2.7'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem "slim-rails"
 gem "octokit"
+gem "foreman"
 
 group :development, :test do
   gem 'byebug'
