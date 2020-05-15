@@ -1,4 +1,5 @@
 module SearchService
+  # Base class for making search request to some API. Can be easily overwritten in child classes.
   class Base
     ITEMS_PER_PAGE = 20.freeze
 

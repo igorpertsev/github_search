@@ -6,40 +6,50 @@ setupAxios();
 
 document.addEventListener('DOMContentLoaded', () => {
   const resultsContainer = document.getElementById('search_results');
-  const repoSearchInputs = document.querySelectorAll('input.search_input');
-  const errorsContainer = document.querySelectorAll('div.notifications');
+  const repoSearchInputs = document.querySelector('input.search_input');
+  const errorsContainer = document.querySelector('div.notifications');
   let timer;
+  let lastPage = 1;
   let lastQuery = '';
 
   const setErrorMessage= function(error) {
-    errorsContainer.forEach(function(container) {
-      container.innerHTML = error ? renderErrorMessage(error) : ''
-    })
+    errorsContainer.innerHTML = error ? renderErrorMessage(error) : ''
   }
 
-  repoSearchInputs.forEach(function(input) {
-    const runSearchRequest = () => {
-      if (input.value.length < 3) { return };
-      if (input.value === lastQuery) { return };
-      lastQuery = input.value;
+  const runSearchRequest = () => {
+    let $input = $(repoSearchInputs);
+    let inputValue = repoSearchInputs.value;
+    if (inputValue.length < 3) { return };
+    if (inputValue === lastQuery && $input.data('page') == lastPage) { return };
+    if (inputValue != lastQuery) { $input.data('page', 1) }
 
-      axios.get(input.dataset.url, { params: { search_key: input.value } })
-        .then(function (response) {
-          resultsContainer.innerHTML = renderSearchResults(response.data);
-        })
-        .catch(error => {
-          let errorMessage = error.message ? error.message : error.response.data.message
-          setErrorMessage(errorMessage)
-        });
-    };
+    lastQuery = inputValue;
+    lastPage = $input.data('page')
 
-    $(input).bind("change paste keyup", () => {
-      if (input.value !== lastQuery) {
-        resultsContainer.innerHTML = '';
-        setErrorMessage('')
-        clearTimeout(timer);
-        timer = setTimeout(runSearchRequest, 100);
+    axios.get($input.data('url'), {
+      params: {
+        search_key: inputValue,
+        page: $input.data('page')
       }
-    });
+    }).then(function (response) {
+        resultsContainer.innerHTML = renderSearchResults(response.data);
+        $('div.next-page').bind('click', () => {
+          $input.data('page', parseInt($input.data('page')) + 1);
+          runSearchRequest();
+        })
+      })
+      .catch(error => {
+        let errorMessage = error.message ? error.message : error.response.data.message
+        setErrorMessage(errorMessage)
+      });
+  };
+
+  $(repoSearchInputs).bind("change paste keyup", () => {
+    if (repoSearchInputs.value !== lastQuery || $(repoSearchInputs).data('page') != lastPage) {
+      resultsContainer.innerHTML = '';
+      setErrorMessage('')
+      clearTimeout(timer);
+      timer = setTimeout(runSearchRequest, 100);
+    }
   });
 })

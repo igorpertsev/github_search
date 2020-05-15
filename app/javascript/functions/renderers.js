@@ -1,5 +1,16 @@
+const searchResultTemlate = `
+  <div class="list-group">
+    <a href="#" class="list-group-item list-group-item-action active">
+      Total Found Count: {{totalCount}}
+    </a>
+    {{itemsList}}
+    <div href="#" class="next-page list-group-item list-group-item-action active">
+      Next Page
+    </div>
+  </div>
+`
 const searchItemTemplate = `
-  <a href="{{htmlUrl}}" target="_blank">
+  <a class="list-group-item list-group-item-action" href="{{htmlUrl}}" target="_blank">
     <span class="panel-icon"><i class="fas fa-book"></i></span>
     <span>{{owner}}/<strong>{{repo}}</strong></span>
     <span class="panel-icon"><i class="fas fa-star"></i></span>
@@ -13,7 +24,7 @@ const errorTemplate = `
 `
 
 export function renderSearchResults(searchResponse) {
-  return searchResponse.map((itemData) => {
+  let itemsHtml = searchResponse.items.map((itemData) => {
     let html = searchItemTemplate;
 
     return html.replace('{{htmlUrl}}', itemData.url)
@@ -21,9 +32,15 @@ export function renderSearchResults(searchResponse) {
                .replace('{{owner}}', itemData.owner)
                .replace('{{stargazersCount}}', itemData.stargazers_count);
   }).join('');
+
+  let html = searchResultTemlate;
+
+  return html.replace('{{itemsList}}', itemsHtml)
+             .replace('{{totalCount}}', searchResponse.total)
 };
 
 export function renderErrorMessage(errorMessage) {
   let html = errorTemplate;
   return html.replace('{{errorMessage}}', errorMessage);
 };
+
